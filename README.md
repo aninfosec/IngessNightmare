@@ -23,6 +23,7 @@ This exploit works in **two phases**:
    The attacker brute-forces `/proc/<pid>/fd/<fd>` combinations by sending forged `AdmissionReview` requests to the **admission webhook**, injecting a malicious `auth-url` that contains:
    ```nginx
    ssl_engine /proc/<pid>/fd/<fd>;
+   ```
 
    ## 🚀 Exploit Launch Guide
 
