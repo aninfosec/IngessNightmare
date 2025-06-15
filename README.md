@@ -35,9 +35,10 @@ Once you've prepared the following:
 
 ---
 
-### 📦 1. Install Requirements
+###  Steps
 
 ```bash
+###📦 1.Install requirements
 pip3 install -r requirements.txt
 
 ###🧨 2. Compile & Pad Payload
